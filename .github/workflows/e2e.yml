@@ -1,0 +1,40 @@
+name: Cypress E2E Tests
+
+# Allow manual trigger for the workflow
+on:
+  workflow_dispatch:
+
+jobs:
+  run-cypress-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout the code
+        uses: actions/checkout@v3
+
+      # Step 2: Setup Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      # Step 3: Install project dependencies (including Cypress)
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Run Cypress tests
+      - name: Run Cypress tests
+        run: npx cypress run --headless --browser chrome
+        env:
+          CYPRESS_BASE_URL: https://hoohooli.gr
+
+      # Optional: Save Cypress screenshots and videos as artifacts
+      - name: Upload Cypress screenshots and videos on failure
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: cypress-artifacts
+          path: |
+            cypress/screenshots
+            cypress/videos
