@@ -15,6 +15,7 @@ jobs:
           username: ${{ secrets.SMTP_USERNAME }}
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: "Cypress Tests Failed!"
-          body: "The Cypress tests have failed on the ${{ github.ref }} branch."
+          body: |
+            "The Cypress tests have failed in ${{ github.repository }} repository on the ${{ github.ref }} branch."
           to: "kapantzak@gmail.com"
           from: "no-reply@github.com"
