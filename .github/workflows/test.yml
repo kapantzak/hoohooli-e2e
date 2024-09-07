@@ -9,5 +9,8 @@ jobs:
     steps:
       - name: Echo secrets (for testing only)
         run: |
-          echo "SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}"
-          echo "SMTP_PASSWORD: ${{ secrets.MY_SECRET_2 }}"
+          if [ -z "${{ secrets.SMTP_USERNAME }}" ]; then
+              echo "MY_SECRET_1 is not set."
+          else
+              echo "MY_SECRET_1 is set."
+          fi
