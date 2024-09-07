@@ -7,10 +7,15 @@ jobs:
   show-secrets:
     runs-on: ubuntu-latest
     steps:
-      - name: Echo secrets (for testing only)
-        run: |
-          if [ -z "${{ secrets.SMTP_USERNAME }}" ]; then
-              echo "MY_SECRET_1 is not set."
-          else
-              echo "MY_SECRET_1 is set."
-          fi
+      - name: Send Email Notification
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "Cypress Tests Failed!"
+          body: "The Cypress tests have failed on the ${{ github.ref }} branch."
+          to: "you@example.com"
+          from: "no-reply@example.com"
