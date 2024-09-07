@@ -1,0 +1,13 @@
+name: Debug
+
+on:
+  workflow_dispatch:
+
+jobs:
+  show-secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo secrets (for testing only)
+        run: |
+          echo "SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}"
+          echo "SMTP_PASSWORD: ${{ secrets.MY_SECRET_2 }}"

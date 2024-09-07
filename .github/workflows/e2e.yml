@@ -11,27 +11,35 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository
       - name: Checkout the code
         uses: actions/checkout@v3
 
-      # Step 2: Setup Node.js environment
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18"
 
-      # Step 3: Install project dependencies (including Cypress)
       - name: Install dependencies
         run: npm install
 
-      # Step 4: Run Cypress tests
       - name: Run Cypress tests
         run: npx cypress run --headless --browser chrome
         env:
           CYPRESS_BASE_URL: https://hoohooli.gr
 
-      # Optional: Save Cypress screenshots and videos as artifacts
+      - name: Send Email Notification
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.SMTP_USERNAME }} 
+          password: ${{ secrets.SMTP_PASSWORD }} # riup fkjh idca mufc
+          subject: "Cypress Tests Failed!"
+          body: "The Cypress tests have failed on the ${{ github.ref }} branch."
+          to: "you@example.com"
+          from: "no-reply@example.com"
+
       - name: Upload Cypress screenshots and videos on failure
         if: failure()
         uses: actions/upload-artifact@v3
