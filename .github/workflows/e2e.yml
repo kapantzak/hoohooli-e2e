@@ -1,8 +1,10 @@
 name: Cypress E2E Tests
 
-# Allow manual trigger for the workflow
 on:
   workflow_dispatch:
+
+  schedule:
+    - cron: "0 1 * * *"
 
 jobs:
   run-cypress-tests:
