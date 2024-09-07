@@ -33,12 +33,14 @@ jobs:
         with:
           server_address: smtp.gmail.com
           server_port: 587
-          username: ${{ secrets.SMTP_USERNAME }} 
-          password: ${{ secrets.SMTP_PASSWORD }} # riup fkjh idca mufc
-          subject: "Cypress Tests Failed!"
-          body: "The Cypress tests have failed on the ${{ github.ref }} branch."
-          to: "you@example.com"
-          from: "no-reply@example.com"
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "Hoohooli - Cypress Tests Failed!"
+          body: |
+            The Cypress tests have failed in ${{ github.repository }} repository on the ${{ github.ref }} branch.
+          to: "kapantzak@gmail.com"
+          cc: "hoohooligr@gmail.com"
+          from: "no-reply@github.com"
 
       - name: Upload Cypress screenshots and videos on failure
         if: failure()
