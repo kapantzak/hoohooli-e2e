@@ -18,4 +18,8 @@ describe("Home page", () => {
       .first()
       .should("have.text", "Αγοράστε τώρα");
   });
+
+  it("renders cookies consent container", () => {
+    cy.get(".cky-consent-container").should("exist");
+  });
 });
