@@ -6,6 +6,7 @@ on:
 jobs:
   show-secrets:
     runs-on: ubuntu-latest
+    environment: Production
     steps:
       - name: Send Email Notification
         uses: dawidd6/action-send-mail@v3
@@ -16,7 +17,7 @@ jobs:
           password: ${{ secrets.SMTP_PASSWORD }}
           subject: "Hoohooli - Cypress Tests Failed!"
           body: |
-            The Cypress tests have failed in ${{ github.repository }} repository on the ${{ github.ref }} branch.
+            Product path is ${{ vars.PRODUCT_PATH }}.
           to: "kapantzak@gmail.com"
           cc: "hoohooligr@gmail.com"
           from: "no-reply@github.com"
