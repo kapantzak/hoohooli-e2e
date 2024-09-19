@@ -8,7 +8,7 @@ This is a project that performs e2e test on [https://hoohooli.gr](https://hoohoo
 - `PRODUCT_PATH`: The product to add to cart
 - `PRODUCT_PRICE`: Current product price that is checked by the e2e test
 
-Use the above variable on a local `.env` file with the `CYPRESS_` prefix, like this:
+Place the above variables on a local `.env` file with the `CYPRESS_` prefix, like this:
 
 ```
 CYPRESS_BASE_URL=https://hoohooli.gr
