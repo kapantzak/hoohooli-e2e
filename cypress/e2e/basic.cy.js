@@ -5,33 +5,33 @@ describe("Page request", () => {
 
   [
     {
-      url: `${Cypress.env("baseUrl")}`,
+      url: baseUrl,
       page: "",
       status: 200,
     },
     {
-      url: `${Cypress.env("baseUrl")}/shop`,
+      url: `${baseUrl}/shop`,
       page: "shop",
       status: 200,
     },
     {
-      url: `${Cypress.env("baseUrl")}/blog`,
+      url: `${baseUrl}/blog`,
       page: "blog",
       status: 200,
     },
     {
-      url: `${Cypress.env("baseUrl")}/about`,
+      url: `${baseUrl}/about`,
       page: "about",
       status: 200,
     },
     {
-      url: `${Cypress.env("baseUrl")}/contact`,
+      url: `${baseUrl}/contact`,
       page: "contact",
       status: 200,
     },
     {
-      url: `${Cypress.env("baseUrl")}/foo`,
-      page: "foo",
+      url: `${baseUrl}/undefined`,
+      page: "undefined",
       status: 404,
     },
   ].forEach(({ url, page, status }) => {

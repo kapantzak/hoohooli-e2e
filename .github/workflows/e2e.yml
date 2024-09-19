@@ -9,6 +9,7 @@ on:
 jobs:
   run-cypress-tests:
     runs-on: ubuntu-latest
+    environment: Production
 
     steps:
       - name: Checkout the code
@@ -26,6 +27,8 @@ jobs:
         run: npx cypress run --headless --browser chrome
         env:
           CYPRESS_BASE_URL: https://hoohooli.gr
+          CYPRESS_PRODUCT_PATH: ${{ vars.PRODUCT_PATH }}
+          CYPRESS_PRODUCT_PRICE: ${{ vars.PRODUCT_PRICE }}
 
       - name: Send Email Notification
         if: failure()
