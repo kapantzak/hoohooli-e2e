@@ -7,6 +7,15 @@ describe("Navigation", () => {
     cy.visit(baseUrl);
   });
 
+  describe("Home page", () => {
+    describe("Main 'Shop' button", () => {
+      it("navigates to /shop page", () => {
+        cy.get(".uagb-infobox-cta-link").first().click();
+        cy.url().should("include", "/shop");
+      });
+    });
+  });
+
   describe("Main menu", () => {
     describe("Shop menu", () => {
       it("navigates to /shop page", () => {
