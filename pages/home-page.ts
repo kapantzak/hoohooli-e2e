@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
 import { BasePage } from './base-page';
+import { CookieSettingsModal } from './cookie-settings-modal';
 
 export class HomePage extends BasePage {
   constructor(page: Page) {
@@ -28,5 +29,18 @@ export class HomePage extends BasePage {
 
   cookieBannerText() {
     return this.page.getByText('Χρησιμοποιούμε cookies απαραίτητα');
+  }
+
+  async acceptAllCookies() {
+    await this.acceptAllButton().click();
+  }
+
+  async rejectCookies() {
+    await this.rejectButton().click();
+  }
+
+  async openCookieSettings(): Promise<CookieSettingsModal> {
+    await this.settingsButton().click();
+    return new CookieSettingsModal(this.page);
   }
 }
