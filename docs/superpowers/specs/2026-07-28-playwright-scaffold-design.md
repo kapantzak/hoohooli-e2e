@@ -62,10 +62,13 @@ script (see conversation; script discarded, not part of this repo):
 
 **Risk noted and addressed:** the "enable analytics" paths (Accept All, and
 Settings→enable→Save) cause the browser to register a real GA hit. Since the suite
-runs daily against production via a cron job indefinitely, those specific tests block
-network requests to `google-analytics.com` / `googletagmanager.com` before triggering
-the action, so we assert on the resulting cookie/localStorage state without injecting
-synthetic sessions into real analytics data.
+runs daily against production via a cron job indefinitely, the suite blocks network
+requests to the `google-analytics.com` / `analytics.google.com` collection endpoints
+before triggering any action, so we assert on the resulting cookie/localStorage state
+without injecting synthetic sessions into real analytics data. `googletagmanager.com`
+is deliberately left unblocked: it's where the site's own consent script loads from,
+and that script is what sets the `_ga` cookie/`localStorage` state client-side —
+blocking it would prevent the cookie from ever being set and break the assertions.
 
 ## Project structure
 

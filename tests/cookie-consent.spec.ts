@@ -1,16 +1,8 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, expect } from './fixtures';
 import { HomePage } from '../pages/home-page';
-
-async function blockGoogleAnalyticsCollection(page: Page) {
-  await page.route((url) => {
-    return (url.hostname.includes('google-analytics.com') || url.hostname.includes('analytics.google.com'))
-      && url.pathname.includes('collect');
-  }, (route) => route.abort());
-}
 
 test.describe('Cookie consent interactions', () => {
   test('Accept All dismisses the banner and persists analytics consent', async ({ page, context }) => {
-    await blockGoogleAnalyticsCollection(page);
     const homePage = new HomePage(page);
     await homePage.goto();
 
@@ -36,26 +28,32 @@ test.describe('Cookie consent interactions', () => {
 
     const consent = await page.evaluate(() => localStorage.getItem('hoohooli-cookie-consent'));
     expect(consent).toBe(JSON.stringify({ analytics: false }));
-    expect((await context.cookies()).some((c) => c.name === '_ga')).toBe(false);
 
     await page.reload();
     await expect(homePage.cookieBannerText()).toBeHidden();
+
+    // Checked after reload, giving GA the same time window the accept-path
+    // tests get, so a regression that loads GA despite rejection is caught.
+    expect((await context.cookies()).some((c) => c.name === '_ga')).toBe(false);
   });
 
-  test('Settings modal: saving default (no analytics) behaves like Reject', async ({ page }) => {
+  test('Settings modal: saving default (no analytics) behaves like Reject', async ({ page, context }) => {
     const homePage = new HomePage(page);
     await homePage.goto();
 
     const settings = await homePage.openCookieSettings();
+    await expect(settings.necessaryCheckbox()).toBeChecked();
+    await expect(settings.necessaryCheckbox()).toBeDisabled();
+
     await settings.save();
 
     await expect(homePage.cookieBannerText()).toBeHidden();
     const consent = await page.evaluate(() => localStorage.getItem('hoohooli-cookie-consent'));
     expect(consent).toBe(JSON.stringify({ analytics: false }));
+    expect((await context.cookies()).some((c) => c.name === '_ga')).toBe(false);
   });
 
   test('Settings modal: enabling analytics and saving behaves like Accept All', async ({ page, context }) => {
-    await blockGoogleAnalyticsCollection(page);
     const homePage = new HomePage(page);
     await homePage.goto();
 
@@ -78,6 +76,9 @@ test.describe('Cookie consent interactions', () => {
 
     const settings = await homePage.openCookieSettings();
     await settings.goBack();
+
+    const consent = await page.evaluate(() => localStorage.getItem('hoohooli-cookie-consent'));
+    expect(consent).toBeNull();
 
     await page.reload();
     await expect(homePage.cookieBannerText()).toBeVisible();
