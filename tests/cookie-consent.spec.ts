@@ -3,7 +3,8 @@ import { HomePage } from '../pages/home-page';
 
 async function blockGoogleAnalyticsCollection(page: Page) {
   await page.route((url) => {
-    return url.hostname.includes('google-analytics.com') && url.pathname.includes('collect');
+    return (url.hostname.includes('google-analytics.com') || url.hostname.includes('analytics.google.com'))
+      && url.pathname.includes('collect');
   }, (route) => route.abort());
 }
 
@@ -16,12 +17,11 @@ test.describe('Cookie consent interactions', () => {
     await homePage.acceptAllCookies();
     await expect(homePage.cookieBannerText()).toBeHidden();
 
-    // Give GA script time to set cookies
-    await page.waitForTimeout(1000);
-
     const consent = await page.evaluate(() => localStorage.getItem('hoohooli-cookie-consent'));
     expect(consent).toBe(JSON.stringify({ analytics: true }));
-    expect((await context.cookies()).some((c) => c.name === '_ga')).toBe(true);
+
+    // Poll until GA cookie is set
+    await expect.poll(async () => (await context.cookies()).some((c) => c.name === '_ga')).toBe(true);
 
     await page.reload();
     await expect(homePage.cookieBannerText()).toBeHidden();
@@ -65,12 +65,11 @@ test.describe('Cookie consent interactions', () => {
 
     await expect(homePage.cookieBannerText()).toBeHidden();
 
-    // Give GA script time to set cookies
-    await page.waitForTimeout(1000);
-
     const consent = await page.evaluate(() => localStorage.getItem('hoohooli-cookie-consent'));
     expect(consent).toBe(JSON.stringify({ analytics: true }));
-    expect((await context.cookies()).some((c) => c.name === '_ga')).toBe(true);
+
+    // Poll until GA cookie is set
+    await expect.poll(async () => (await context.cookies()).some((c) => c.name === '_ga')).toBe(true);
   });
 
   test('Settings modal: Back discards the choice', async ({ page }) => {
